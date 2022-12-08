@@ -3,8 +3,9 @@ import React from 'react'
 
 const App = () => {
   return (
+   
     <View style={styles.app}>
-      <Text style={{color: "#374983", fontSize: 20}}>Today's App...</Text>
+      <Text style={{color: "#374983", fontSize: 20}}>Today's Appsere...</Text>
     </View>
   )
 }
