@@ -9,13 +9,35 @@ const getRemaining = (time) => {
   return { mins, secs };
 }
 
+// const getOrientation = () => {
+//   let orientation = "black";
+//   if (screen.width > screen.height) {
+//     orientation == "Landscape";
+//   } else {
+//     orientation == "Portrait";
+//   }
+//   console.log(orientation);
+//   // alert("Orientation Is", `${orientation}` );
+// }
+
 const App = () => {
   const [remaingingsecs, setReminingSecs] = useState(0);
-  const [isActive, setIsActive] = useState(false)
+  const [isActive, setIsActive] = useState(false);
+  const [isLandscape, setIsLandscape] = useState(false);
   const { mins, secs } = getRemaining(remaingingsecs);
+
+  setOrientation = () => {
+    if (screen.width >= screen.height) {
+      setIsLandscape(true)
+    } else {
+      setIsLandscape(false)
+    }
+  }
+
 
   toggle = () => {
     setIsActive(!isActive)
+    getOrientation()
   }
 
   reset = () => {
@@ -43,7 +65,7 @@ const App = () => {
       <StatusBar barStyle="light-content" />
       <Text style={styles.timerText}>{`${mins}:${secs}`}</Text>
       <TouchableOpacity onPress={toggle} style={styles.button} >
-        <Text style={styles.buttonText}>{isActive ? 'Start' : 'Pause'}</Text>
+        <Text style={styles.buttonText}>{isActive ? 'Pause' : 'Start'}</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={reset} style={[styles.button, {borderColor: "#FF851B", marginTop: 10}]}>
         <Text style={ [ styles.buttonText, {color: "#FF851B"},] }>Reset</Text>
@@ -58,7 +80,6 @@ const styles = StyleSheet.create({
   app: {
     flex: 1,
     alignItems: "center",
-    flexDirection:"column",
     justifyContent: "center",
     backgroundColor: "#07121B"
   },
@@ -81,3 +102,4 @@ const styles = StyleSheet.create({
 
   }
 })
+
