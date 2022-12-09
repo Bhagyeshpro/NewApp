@@ -1,7 +1,9 @@
 import { StatusBar, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { useDeviceOrientation } from "@react-native-community/hooks"
 
 const screen = Dimensions.get("window");
+
 
 const getRemaining = (time) => {
   const mins = Math.floor(time / 60);
@@ -23,26 +25,24 @@ const getRemaining = (time) => {
 const App = () => {
   const [remaingingsecs, setReminingSecs] = useState(0);
   const [isActive, setIsActive] = useState(false);
-  const [isLandscape, setIsLandscape] = useState(false);
+  // const [isLandscape, setIsLandscape] = useState(true);
   const { mins, secs } = getRemaining(remaingingsecs);
-
-  setOrientation = () => {
-    if (screen.width >= screen.height) {
-      setIsLandscape(true)
-    } else {
-      setIsLandscape(false)
-    }
-  }
-
+  const { landscape } = useDeviceOrientation();
 
   toggle = () => {
     setIsActive(!isActive)
-    getOrientation()
+    // getOrientation()
   }
 
   reset = () => {
     setReminingSecs(0),
-    setIsActive(false)
+      setIsActive(false)
+  }
+
+  if (landscape) {
+    toggle()
+  } else {
+    reset()
   }
 
   useEffect(() => {
@@ -56,31 +56,49 @@ const App = () => {
     }
 
     return () => clearInterval(interval)
+  }, [isActive, remaingingsecs, screen.width, screen.height])
 
-  }, [isActive, remaingingsecs])
+
+  // useEffect(() => {
+  //   let width = screen.width;
+  //   let height = screen.height;
+
+  //   if (width >= height) {
+  //     setIsLandscape(true)
+  //   } else {
+  //     setIsLandscape(false)
+  //   }
+  // }, [])
 
 
-  return (
-    <View style={styles.app}>
-      <StatusBar barStyle="light-content" />
-      <Text style={styles.timerText}>{`${mins}:${secs}`}</Text>
-      <TouchableOpacity onPress={toggle} style={styles.button} >
-        <Text style={styles.buttonText}>{isActive ? 'Pause' : 'Start'}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={reset} style={[styles.button, {borderColor: "#FF851B", marginTop: 10}]}>
-        <Text style={ [ styles.buttonText, {color: "#FF851B"},] }>Reset</Text>
-      </TouchableOpacity>
-    </View>
-  )
+return (
+  <View style={[landscape ? styles.appLandscape : styles.app]}>
+    <StatusBar barStyle="light-content" />
+    <Text style={styles.timerText}>{`${mins}:${secs}`}</Text>
+    <TouchableOpacity onPress={toggle} style={[landscape ? styles.buttonLandscape : styles.button]} >
+      <Text style={styles.buttonText}>{isActive ? 'Pause' : 'Start'}</Text>
+    </TouchableOpacity>
+    <TouchableOpacity onPress={reset} style={[styles.button, { borderColor: "#FF851B", marginTop: 10 }]}>
+      <Text style={[styles.buttonText, { color: "#FF851B" },]}>Reset</Text>
+    </TouchableOpacity>
+  </View>
+)
 }
 
 export default App
 
 const styles = StyleSheet.create({
+  appLandscape: {
+    flex: 1,
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    backgroundColor: "#07121B"
+  },
   app: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     backgroundColor: "#07121B"
   },
   button: {
@@ -92,6 +110,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  buttonLandscape: {
+    borderColor: "#b9aaff",
+    borderWidth: 10,
+    width: screen.height / 2,
+    height: screen.height / 2,
+    borderRadius: screen.height / 2,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  
   buttonText: {
     fontSize: 45,
     color: "#B9AAFF"
