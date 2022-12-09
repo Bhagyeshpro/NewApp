@@ -1,7 +1,11 @@
 import { StatusBar, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import useDeviceOrientation from "@react-native-community/hooks";
+
 
 const screen = Dimensions.get("window");
+// const orientation  = useDeviceOrientation();
+// const orientation = useDeviceOrientation()
 
 const getRemaining = (time) => {
   const mins = Math.floor(time / 60);
