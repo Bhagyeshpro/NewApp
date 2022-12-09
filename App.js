@@ -1,6 +1,8 @@
-import { StatusBar, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StatusBar, Dimensions, StyleSheet, Text, TouchableOpacity, View, SafeAreaView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useDeviceOrientation } from "@react-native-community/hooks"
+// import RNShake  from "react-native-shake"
+// import { RNShake }  from "react-native-shake"
 
 const screen = Dimensions.get("window");
 
@@ -11,21 +13,12 @@ const getRemaining = (time) => {
   return { mins, secs };
 }
 
-// const getOrientation = () => {
-//   let orientation = "black";
-//   if (screen.width > screen.height) {
-//     orientation == "Landscape";
-//   } else {
-//     orientation == "Portrait";
-//   }
-//   console.log(orientation);
-//   // alert("Orientation Is", `${orientation}` );
-// }
+// RNShake.ShakeEvent
+
 
 const App = () => {
   const [remaingingsecs, setReminingSecs] = useState(0);
   const [isActive, setIsActive] = useState(false);
-  // const [isLandscape, setIsLandscape] = useState(true);
   const { mins, secs } = getRemaining(remaingingsecs);
   const { landscape } = useDeviceOrientation();
 
@@ -39,12 +32,6 @@ const App = () => {
       setIsActive(false)
   }
 
-  if (landscape) {
-    toggle()
-  } else {
-    reset()
-  }
-
   useEffect(() => {
     let interval = null;
     if (isActive) {
@@ -54,35 +41,52 @@ const App = () => {
     } else if (!isActive && remaingingsecs !== 0) {
       clearInterval(interval);
     }
-
     return () => clearInterval(interval)
   }, [isActive, remaingingsecs, screen.width, screen.height])
 
+  useEffect(() => {
 
-  // useEffect(() => {
-  //   let width = screen.width;
-  //   let height = screen.height;
-
-  //   if (width >= height) {
-  //     setIsLandscape(true)
-  //   } else {
-  //     setIsLandscape(false)
-  //   }
-  // }, [])
+    if (landscape) {
+      setIsActive(true)
+    } else {
+      setIsActive(false)
+    }
 
 
-return (
-  <View style={[landscape ? styles.appLandscape : styles.app]}>
-    <StatusBar barStyle="light-content" />
-    <Text style={styles.timerText}>{`${mins}:${secs}`}</Text>
-    <TouchableOpacity onPress={toggle} style={[landscape ? styles.buttonLandscape : styles.button]} >
+    // if (RNShake) {
+    //   alert("Shakking")
+    // }
+  }, [landscape])
+
+
+
+
+  return (landscape ? (
+    <SafeAreaView style={[landscape ? styles.appLandscape : styles.app]}>
+      <StatusBar hidden={true} />
+      <TouchableOpacity >
+        <Text style={styles.timerText}>{`${mins}:${secs}`}</Text>
+      </TouchableOpacity>
+
+    </SafeAreaView>
+  ) : (<View style={[landscape ? styles.appLandscape : styles.app]}>
+    <TouchableOpacity style={[landscape ? styles.buttonLandscape : styles.button]} >
       <Text style={styles.buttonText}>{isActive ? 'Pause' : 'Start'}</Text>
     </TouchableOpacity>
-    <TouchableOpacity onPress={reset} style={[styles.button, { borderColor: "#FF851B", marginTop: 10 }]}>
-      <Text style={[styles.buttonText, { color: "#FF851B" },]}>Reset</Text>
-    </TouchableOpacity>
-  </View>
-)
+  </View>)
+
+
+    // <View style={[landscape ? styles.appLandscape : styles.app]}>
+    //   <StatusBar barStyle="light-content" />
+    //   <Text style={styles.timerText}>{`${mins}:${secs}`}</Text>
+    //   <TouchableOpacity onPress={toggle} style={[landscape ? styles.buttonLandscape : styles.button]} >
+    //     <Text style={styles.buttonText}>{isActive ? 'Pause' : 'Start'}</Text>
+    //   </TouchableOpacity>
+    //   <TouchableOpacity onPress={reset} style={[styles.button, { borderColor: "#FF851B", marginTop: 10 }]}>
+    //     <Text style={[styles.buttonText, { color: "#FF851B" },]}>Reset</Text>
+    //   </TouchableOpacity>
+    // </View>
+  )
 }
 
 export default App
@@ -119,13 +123,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  
+
   buttonText: {
     fontSize: 45,
     color: "#B9AAFF"
   },
   timerText: {
-    fontSize: 75,
+    fontSize: 100,
     marginBottom: 10,
 
   }
