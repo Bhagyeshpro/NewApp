@@ -1,6 +1,6 @@
 import { StatusBar, Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import useDeviceOrientation from "@react-native-community/hooks";
+// import useDeviceOrientation from "@react-native-community/hooks";
 
 
 const screen = Dimensions.get("window");
